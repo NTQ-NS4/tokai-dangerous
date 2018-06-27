@@ -26,21 +26,26 @@
     </style>
   </head>
   <body style="background-attachment: fixed;background-position: center;background-repeat: no-repeat;background-size: cover">
-      <nav class="navbar navbar-dark navbar-right bg-dark mb-2 text-right">
-          <div style="width: 100%;">
-              <div class="row">
-                  <div class="col-md-2 offset-md-10"><select id="modeSelect" class="form-control">
-                    <option value="" selected="">Normal mode</option>
-                    <option value="hentai">Hentai Nhâm mode</option>
-                  </select></div>
-                </div>
+      <nav class="bg-dark mb-2 py-2">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-10 d-flex align-items-center">
+              <h3 class="text-white m-0">Tokai Dangerous MoeMoe</h3>
+            </div>
+            <div class="col-md-2">
+              <select id="modeSelect" class="form-control">
+                <option value="" selected="">Normal mode</option>
+                <option value="hentai">Hentai Nhâm mode</option>
+              </select>
+            </div>
           </div>
+        </div>
       </nav>
 
     <div class="container-fluid">
       <div class="row gutter-10 mb-2">
         <div class="col-md-5">
-            <input type="text" id="btnEd" class="form-control"/>
+            <input type="text" id="btnEd" class="form-control" placeholder="Nhập để tìm kiếm màn hình"/>
         </div>
         <div class="col-md-2">
             <select id="actionSelect" class="form-control">
@@ -91,6 +96,8 @@
 
       </div>
     </div>
+
+    <!-- <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script> -->
 
     <script>
       // You can also require other files to run in this process

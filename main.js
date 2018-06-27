@@ -7,7 +7,7 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 960, height: 600})
+  mainWindow = new BrowserWindow({width: 1020, height: 660})
 
   // mainWindow.webContents.openDevTools()
 
