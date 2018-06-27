@@ -115,6 +115,7 @@ var trans = {
     'fixbug': '%sの不具合修正',
     'fixbug_in_bug_list': '不具合票No.%s不具合修正',
     'fixbug_in_customer_requests': 'JUST販売 指摘内容管理表_No.%s不具合修正',
+    'test': '%sテスト',
     'change_spec': '%s仕様変更対応',
     'translate': '%s翻訳',
     'update_spec': '%s仕様書更新',
