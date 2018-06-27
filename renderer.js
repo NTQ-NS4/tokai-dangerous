@@ -134,7 +134,9 @@ var trans = {
     'from_to': '— %s-%s%',
     'implement': '%s開発',
     'fixbug': '%sの不具合修正',
-    'fixbug_in_bug_list': '不具合票No.%s不具合修正',
+    'fixbug_in_bug_list_1': '%sの不具合修正（不具合票No.%s）', // both
+    'fixbug_in_bug_list_2': '%s画面の不具合修正', // Screen ID only
+    'fixbug_in_bug_list_3': '不具合票No.%s修正', // Bug ID only
     'fixbug_in_customer_requests': 'JUST販売 指摘内容管理表_No.%s不具合修正',
     'test': '%sテスト',
     'change_spec': '%s仕様変更対応',
@@ -183,10 +185,25 @@ function copyTimesheet() {
     }
 
     var action = document.querySelector('#actionSelect option:checked').value;
+    var bugIdList = document.querySelector('#bugIdSelect').value;
     var percentFrom = document.querySelector('#percentFromSelect option:checked').value;
     var percentTo = document.querySelector('#percentToSelect option:checked').value;
 
-    var content = getMessage(trans[action], screen) + ' ' + getMessage(trans.from_to, percentFrom, percentTo);
+    if (action == 'fixbug_in_bug_list') {
+        if (screen && !bugIdList) {
+            var content = getMessage('fixbug_in_bug_list_2', screen);
+        } else if (!screen && bugIdList) {
+            var content = getMessage('fixbug_in_bug_list_3', bugIdList);
+        } else {
+            var content = getMessage('fixbug_in_bug_list_1', screen, bugIdList);
+        }
+    } else if (action == 'fixbug_in_customer_requests') {
+        var content = getMessage(action, bugIdList);
+    } else {
+        var content = getMessage(action, screen);
+    }
+
+    var content = content + ' ' + getMessage('from_to', percentFrom, percentTo);
     content = content.replace(/,/g, '、');
 
     clipboard.writeText(content);
@@ -196,7 +213,7 @@ function copyTimesheet() {
 
 function getMessage() {
     var args = [].slice.call(arguments);
-    var messageTemplate = args[0];
+    var messageTemplate = trans[args[0]];
     args.shift();
 
     args.forEach(function(label) {
@@ -206,8 +223,18 @@ function getMessage() {
     return messageTemplate;
 }
 
+function onChangeAction() {
+    var value = this.value;
+    if (value == 'fixbug_in_bug_list' || value == 'fixbug_in_customer_requests') {
+        document.querySelector('#bugIdSelect').style.display = 'block';
+    } else {
+        document.querySelector('#bugIdSelect').style.display = 'none';
+    }
+}
+
 document.querySelector('#btnEd').addEventListener('keyup', getData)
 document.querySelector('#copyTimesheetBtn').addEventListener('click', copyTimesheet)
+document.querySelector('#actionSelect').addEventListener('change', onChangeAction)
 document.addEventListener('click', function (e) {
     if (e.target.classList.contains('copyBtn')) {
         var data = JSON.parse(decodeURIComponent(e.target.parentNode.parentNode.dataset.copy));
