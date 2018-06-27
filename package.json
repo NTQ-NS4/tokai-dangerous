@@ -1,6 +1,6 @@
 {
   "name": "tokai-dangerous-moemoe",
-  "version": "2.2.1",
+  "version": "3.0.0",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
@@ -28,5 +28,7 @@
       "target": "squirrel"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "tinycolor2": "^1.4.1"
+  }
 }
