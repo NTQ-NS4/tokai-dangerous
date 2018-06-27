@@ -1,6 +1,6 @@
 {
-  "name": "acmos-app",
-  "version": "1.0.0",
+  "name": "tokai-dangerous-moemoe",
+  "version": "2.1.1",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
@@ -27,5 +27,6 @@
     "win": {
       "target": "squirrel"
     }
-  }
+  },
+  "dependencies": {}
 }
