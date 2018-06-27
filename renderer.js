@@ -157,7 +157,7 @@ function getData() {
 }
 
 function display(data) {
-    var html = '<p><strong>' + data.length + ' found</strong></p>';
+    var html = '<p class="mb-3"><strong>' + data.length + ' found</strong></p>';
     data.forEach(function(value) {
         var color = '#fefefe';
         if (!mode) {
@@ -166,10 +166,10 @@ function display(data) {
 
         var border = tinycolor(color).darken().toString();
 
-        html += '<div class="screenDiv" style="background:'+color+';border: 1px solid '+border+';line-height:1;margin:12px 0;padding: 2px 3px 4px 3px;" data-copy="' + encodeURIComponent(JSON.stringify(value)) +'">' +
+        html += '<p class="screenDiv" style="background:'+color+';border: 1px solid '+border+';heigth:32px;line-height:32px;padding-bottom: 2px;" data-copy="' + encodeURIComponent(JSON.stringify(value)) +'">' +
         'JSTSAS' + value.full +
-        '<div style="float:right"><button class="copyJapaneseBtn" style="border: none;background: #ccc;">COPY JAPANESE</button>' +
-        ' <button class="copyBtn" style="border: none;background: #ccc;">COPY FULL</button></div></div>';
+        '<span style="float:right"><button class="copyJapaneseBtn btn btn-default btn-sm">COPY JAPANESE</button>' +
+        ' <button class="copyBtn btn btn-default btn-sm">COPY FULL</button></span></p>';
     });
 
     document.querySelector('#list').innerHTML = html;
@@ -187,10 +187,11 @@ function copyTimesheet() {
     var percentTo = document.querySelector('#percentToSelect option:checked').value;
 
     var content = getMessage(trans[action], screen) + ' ' + getMessage(trans.from_to, percentFrom, percentTo);
+    content = content.replace(/,/g, '、');
 
-    clipboard.writeText(content.replace(/,/g, '、'));
+    clipboard.writeText(content);
 
-    new Notification('Đã copy')
+    new Notification('Đã copy', { body: content })
 }
 
 function getMessage() {
@@ -212,14 +213,14 @@ document.addEventListener('click', function (e) {
         var data = JSON.parse(decodeURIComponent(e.target.parentNode.parentNode.dataset.copy));
         clipboard.writeText('JSTSAS' + data.full);
 
-        new Notification('Đã copy');
+        new Notification('Đã copy', { body: data.full });
     }
 
     if (e.target.classList.contains('copyJapaneseBtn')) {
         var data = JSON.parse(decodeURIComponent(e.target.parentNode.parentNode.dataset.copy));
         clipboard.writeText('JSTSAS' + data.japanese);
 
-        new Notification('Đã copy');
+        new Notification('Đã copy', { body: data.japanese });
     }
 
     if (e.target.classList.contains('screenDiv')) {

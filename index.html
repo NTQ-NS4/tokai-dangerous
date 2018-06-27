@@ -3,62 +3,93 @@
   <head>
     <meta charset="UTF-8">
     <title>Tokai Dangerous MoeMoe</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      body {
+        padding-bottom: 10px;
+        font-size: .9rem;
+        line-height: 1.2;
+      }
+      .btn, .form-control {
+        border-radius: 0;
+      }
+      .gutter-10 {
+          margin-left: -5px;
+          margin-right: -5px;
+      }
+
+      .gutter-10>* {
+          padding-left: 5px;
+          padding-right: 5px;
+      }
+
+    </style>
   </head>
   <body style="background-attachment: fixed;background-position: center;background-repeat: no-repeat;background-size: cover">
-    <!-- <h1>Hello World!</h1> -->
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    <!-- We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>. -->
+      <nav class="navbar navbar-dark navbar-right bg-dark mb-2 text-right">
+          <div style="width: 100%;">
+              <div class="row">
+                  <div class="col-md-2 offset-md-10"><select id="modeSelect" class="form-control">
+                    <option value="" selected="">Normal mode</option>
+                    <option value="hentai">Hentai Nhâm mode</option>
+                  </select></div>
+                </div>
+          </div>
+      </nav>
 
-    <input type="text" id="btnEd" style="padding: 3px 5px;font-size: 1.3em;" />
-    <select id="actionSelect" style="padding: 3px 5px;font-size: 1.3em;">
-      <option value="implement">Thực hiện</option>
-      <option value="fixbug">Fixbug</option>
-      <option value="fixbug_in_bug_list">Fixbug in buglist</option>
-      <option value="fixbug_in_customer_requests">Fixbug in customer requests</option>
-      <option value="change_spec">Sửa theo updated spec</option>
-      <option value="test">Test</option>
-      <option value="translate">Dịch</option>
-      <option value="update_spec">Dịch thay đổi spec</option>
-    </select>
-    <select id="percentFromSelect" style="padding: 3px 5px;font-size: 1.3em;">
-      <option value="0" selected>0%</option>
-      <option value="10">10%</option>
-      <option value="20">20%</option>
-      <option value="30">30%</option>
-      <option value="40">40%</option>
-      <option value="50">50%</option>
-      <option value="60">60%</option>
-      <option value="70">70%</option>
-      <option value="80">80%</option>
-      <option value="90">90%</option>
-    </select>
+    <div class="container-fluid">
+      <div class="row gutter-10 mb-2">
+        <div class="col-md-5">
+            <input type="text" id="btnEd" class="form-control"/>
+        </div>
+        <div class="col-md-2">
+            <select id="actionSelect" class="form-control">
+                <option value="implement">Thực hiện</option>
+                <option value="fixbug">Fixbug</option>
+                <option value="fixbug_in_bug_list">Fixbug in buglist</option>
+                <option value="fixbug_in_customer_requests">Fixbug in customer requests</option>
+                <option value="change_spec">Sửa theo updated spec</option>
+                <option value="test">Test</option>
+                <option value="translate">Dịch</option>
+                <option value="update_spec">Dịch thay đổi spec</option>
+              </select>
+        </div>
+        <div class="col-md-1">
+            <select id="percentFromSelect" class="form-control">
+                <option value="0" selected>0%</option>
+                <option value="10">10%</option>
+                <option value="20">20%</option>
+                <option value="30">30%</option>
+                <option value="40">40%</option>
+                <option value="50">50%</option>
+                <option value="60">60%</option>
+                <option value="70">70%</option>
+                <option value="80">80%</option>
+                <option value="90">90%</option>
+              </select>
+        </div>
+        <div class="col-md-1">
+            <select id="percentToSelect" class="form-control">
+                <option value="10">10%</option>
+                <option value="20">20%</option>
+                <option value="30">30%</option>
+                <option value="40">40%</option>
+                <option value="50">50%</option>
+                <option value="60">60%</option>
+                <option value="70">70%</option>
+                <option value="80">80%</option>
+                <option value="90">90%</option>
+                <option value="100" selected>100%</option>
+              </select>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-success btn-block" id="copyTimesheetBtn">COPY TIMESHEET REPORT</button>
+        </div>
+      </div>
 
-    <select id="percentToSelect" style="padding: 3px 5px;font-size: 1.3em;">
-      <option value="10">10%</option>
-      <option value="20">20%</option>
-      <option value="30">30%</option>
-      <option value="40">40%</option>
-      <option value="50">50%</option>
-      <option value="60">60%</option>
-      <option value="70">70%</option>
-      <option value="80">80%</option>
-      <option value="90">90%</option>
-      <option value="100" selected>100%</option>
-    </select>
+      <div id="list">
 
-    <button id="copyTimesheetBtn" style="padding: 3px 5px;font-size: 1.3em;">COPY TIMESHEET REPORT</button>
-
-    <div style="float:right">
-      <select id="modeSelect" style="padding: 3px 5px;font-size: 1.3em;">
-        <option value="" selected>Normal mode</option>
-        <option value="hentai">Hentai Nhâm mode</option>
-      </select>
-    </div>
-
-    <div id="list">
-
+      </div>
     </div>
 
     <script>
