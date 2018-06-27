@@ -256,32 +256,65 @@ var normalBackgrounds = [
     '#FFAB40'
 ];
 
-var hentaiBackgrounds = [...Array(68).keys()].map(function(index) {
-    return 'images/hentai/' + index.toString().padStart(4, '0') + '.jpg';
+var arr = hentaiBackgrounds =[...Array(68).keys()];
+// FIXME: Add image late
+delete arr['0'];
+delete arr['22'];
+delete arr['23'];
+delete arr['36'];
+delete arr['35'];
+delete arr['64'];
+
+var hentaiBackgrounds = arr.map(function(index) {
+  let img = 'images/hentai/' + index.toString().padStart(4, '0') + '.jpg';
+
+  let imgElm = document.createElement('img');
+  imgElm.src = img;
+  imgElm.style.width = '1px';
+  imgElm.style.height = '1px';
+  imgElm.style.visibility = 'hidden';
+  document.body.appendChild(imgElm);
+
+  return img;
 });
 
+const btnShowHideBg = document.getElementById('show-background');
+
 function changeBackground() {
+    let items;
     switch (mode) {
         case 'hentai':
-            var items = hentaiBackgrounds;
+            items = hentaiBackgrounds;
+            btnShowHideBg.style.visibility = 'visible';
             break;
         default:
-            var items = normalBackgrounds;
+            btnShowHideBg.style.visibility = 'none';
+            items = normalBackgrounds;
     }
 
-    var image = items[Math.floor(Math.random()*items.length)];
+    let image = items[Math.floor(Math.random()*items.length)];
     if (image.startsWith('#')) {
         document.getElementsByTagName('body')[0].style.backgroundImage = ``;
     } else {
         document.getElementsByTagName('body')[0].style.backgroundImage = `url(${image})`;
     }
-    }
+}
 
 document.querySelector('#modeSelect').addEventListener('change', function() {
     mode = this.value;
     changeBackground();
     display(filteredScreens);
+
 })
+
+// FIXME: Implement late
+btnShowHideBg.addEventListener('click', function () {
+  let body = document.getElementsByTagName('body'[0]);
+  let bg = body.style.backgroundImage;
+  bg = bg.replace('url(','').replace(')','').replace(/\"/gi, "");
+  document.getElementById('img-background').src = bg;
+
+});
 
 changeBackground();
 setInterval(changeBackground, 6000);
