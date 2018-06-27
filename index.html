@@ -11,7 +11,7 @@
         line-height: 1.2;
       }
       .btn, .form-control {
-        border-radius: 0;
+        border-radius: 0 !important;
       }
       .gutter-10 {
           margin-left: -5px;
@@ -49,15 +49,17 @@
         </div>
         <div class="col-md-2">
             <select id="actionSelect" class="form-control">
-                <option value="implement">Thực hiện</option>
-                <option value="fixbug">Fixbug</option>
-                <option value="fixbug_in_bug_list">Fixbug in buglist</option>
-                <option value="fixbug_in_customer_requests">Fixbug in customer requests</option>
-                <option value="change_spec">Sửa theo updated spec</option>
-                <option value="test">Test</option>
-                <option value="translate">Dịch</option>
-                <option value="update_spec">Dịch thay đổi spec</option>
-              </select>
+              <option value="implement">Thực hiện</option>
+              <option value="fixbug">Fixbug</option>
+              <option value="fixbug_in_bug_list">Fixbug in buglist</option>
+              <option value="fixbug_in_customer_requests">Fixbug in customer requests</option>
+              <option value="change_spec">Sửa theo updated spec</option>
+              <option value="test">Test</option>
+              <option value="translate">Dịch</option>
+              <option value="update_spec">Dịch thay đổi spec</option>
+            </select>
+
+            <input type="text" id="bugIdSelect" style="display:none" class="form-control mt-2" placeholder="Nhập bug ID"/>
         </div>
         <div class="col-md-1">
             <select id="percentFromSelect" class="form-control">
