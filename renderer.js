@@ -193,4 +193,16 @@ document.addEventListener('click', function (e) {
         new Notification('Đã copy');
     }
 });
+
+function changeBackground() {
+    var items = [
+        'images/Seppuku.jpg',
+        'images/bg-tokai.JPEG'
+    ];
+    var image = items[Math.floor(Math.random()*items.length)];;
+    document.getElementsByTagName('body')[0].style.backgroundImage = `url(${image})`;
+}
+
+setInterval(changeBackground, 6000);
+
 display(screens);
