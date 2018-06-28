@@ -9,6 +9,8 @@ var tinycolor = require("tinycolor2")
 var screens;
 var filteredScreens;
 var trans;
+var backgroundInterval;
+var backgroundChangeTime = 10000;
 
 sendRequest = options => {
     return new Promise((resolve, reject) => {
@@ -45,8 +47,8 @@ initiateData = (data) => {
 }
 
 initiateMainScreen = () => {
-    changeBackground();
-    setInterval(changeBackground, 6000);
+    theme.changeBackground();
+    backgroundInterval = setInterval(theme.setIntervalBackground, backgroundChangeTime);
 
     displayScreens(filteredScreens);
 }
@@ -206,86 +208,139 @@ var normalBackgrounds = [
     '#FFAB40'
 ];
 
-var arr = hentaiBackgrounds =[...Array(68).keys()];
-// FIXME: Add image late
-delete arr['0'];
-delete arr['22'];
-delete arr['23'];
-delete arr['36'];
-delete arr['35'];
-delete arr['64'];
+const theme = function () {
+  let $body = $('body');
+  let themeCurrent = '';
+  let hentai = [...Array(64).keys()].map(function (index) {
+    return 'images/hentai/' + index + '.jpg'
+  });
 
-var hentaiBackgrounds = arr.map(function(index) {
-  let img = 'images/hentai/' + index.toString().padStart(4, '0') + '.jpg';
+  const options = { hentai: hentai };
+  let prevBg;
+  let nextBg;
+  let isRelax = false;
 
-  $('body').append(`<img src="${img}" style="width: 1px; height: 1px; visibility: hidden">`);
-
-  return img;
-});
-
-let backgroundUrl = '';
-
-function changeBackground(change) {
-  let isRelax = $('.relax-option[value="work"]:visible').length;
-  if (isRelax && change !== true) {
-    return;
+  function loadAll() {
+    let html = '';
+    for (let name in options) {
+      for (let i = 0; i < options[name].length; i++) {
+        html += `<li class="bg-theme ${name}_${i}" style="display: none; background-image: url('${options[name][i]}')"></li>`;
+      }
+    }
+    $body.find('.backgrounds').append(html)
   }
-  let items;
-  mode = $('#modeSelect').val();
-  switch (mode) {
-    case 'hentai':
-      items = hentaiBackgrounds;
-      break;
-    default:
-      items = normalBackgrounds;
+  function setupThem(name) {
+    if (typeof name === 'undefined' || name === '') {
+      name = 'normal';
+    }
+    prevBg = 'prev';
+    nextBg = 'next';
+    themeCurrent = name;
+    $body.attr('data-theme', name);
+    $body.removeClass('relax');
+    $body.find('.backgrounds li').css({ display: 'none' });
+    $body.find('.relax-option').hide();
+    work();
+    if (name === 'normal') {
+      $body.find('.next-bg').hide();
+      $body.find('.relax-option').hide();
+    } else {
+      $body.find('.next-bg').show();
+      $body.find('.relax-option[value="work"]').hide();
+      $body.find('.relax-option[value="relax"]').show();
+    }
   }
 
-  let image = items[Math.floor(Math.random() * items.length)];
-  while (typeof image === 'undefined') {
-    image = items[Math.floor(Math.random() * items.length)];
-  }
-  if (!image || image.startsWith('#')) {
-    backgroundUrl = '';
-  } else {
-    backgroundUrl = image;
-  }
-  let urlBg = backgroundUrl === '' ? '' : `url(${backgroundUrl})`;
-  document.getElementsByTagName('body')[0].style.backgroundImage = urlBg;
-}
+  function changeBackground() {
+    if (Array.isArray(options[themeCurrent]) && options[themeCurrent].length > 1) {
+      prevBg = nextBg;
 
-$('#modeSelect').change(function() {
-    let mode = $(this).val();
-    $('body').attr('data-mode', mode);
-    changeBackground(true);
-    displayScreens(filteredScreens);
-  $('.relax-option[value="work"]').hide();
-  if (mode) {
+      nextBg = Math.floor(Math.random() * options[themeCurrent].length);
+      while (nextBg === prevBg) {
+        nextBg = Math.floor(Math.random() * options[themeCurrent].length);
+      }
+
+      let show = { width: '100%', height: '100%', opacity: 1 };
+      let hide = { width: '0%', height: '0%', opacity: 0 };
+      let time = 500;
+
+      $(`.bg-theme.${themeCurrent}_${prevBg}`).css({ zIndex: 5 }).animate(hide, time, function () {
+        $(this).hide();
+      });
+      $(`.bg-theme.${themeCurrent}_${nextBg}`).css({ zIndex: 4, opacity: 0 }).show().animate(show, time, function () {
+
+      });
+      $('img.relax').attr('src', options[themeCurrent][nextBg]);
+    }
+  }
+  function work() {
+    isRelax = false;
+    $body.find('.backgrounds li').css({ display: 'none' });
+    $body.find('.backgrounds').show();
+    $body.find('#app .main-content').slideDown();
+    $body.find('img.relax').remove();
     $('.relax-option[value="relax"]').show();
-  } else {
-    $('.relax-option[value="relax"]').hide();
+    $('.relax-option[value="work"]').hide();
   }
-});
 
-function work() {
-  $('.relax-option[value="work"]').hide();
-  $('.relax-option[value="relax"]').show();
-  $('body').removeClass('relax');
-}
+  loadAll();
 
-function relax() {
-  $('.relax-option[value="work"]').show();
-  $('.relax-option[value="relax"]').hide();
-  $('body').addClass('relax');
-  $('.img-background').html(`<img class="img-fluid" src="${backgroundUrl}">`)
-}
-
-$('.relax-option[value="work"]').click(work);
-
-$('.relax-option[value="relax"]').click(relax);
-
-$('.next-bg').click(function () {
-  changeBackground(true);
-  if ($('.relax-option[value="work"]:visible').length) {
-      relax();
+  return {
+    init: function () {
+      setupThem('');
+    },
+    changeBackground: changeBackground,
+    work: work,
+    relax: function () {
+      if (nextBg === 'next') {
+        changeBackground();
+      }
+      isRelax = true;
+      $body.find('.backgrounds').hide();
+      $body.find('#app .main-content').slideUp();
+      $('.relax-option[value="work"]').show();
+      $('.relax-option[value="relax"]').hide();
+      $body.append(`<img class="img-fluid relax" style="opacity: 0.1" src="${options[themeCurrent][nextBg]}">`)
+    },
+    setup: function (name) {
+      setupThem(name);
+      changeBackground();
+    },
+    setIntervalBackground: function () {
+      if (isRelax) {
+        return;
+      }
+      changeBackground();
+    }
   }
+}();
+
+theme.init();
+
+$(document).ready(function () {
+
+  $('#modeSelect').change(function () {
+    clearInterval(backgroundInterval);
+    backgroundInterval = setInterval(theme.setIntervalBackground, backgroundChangeTime);
+    theme.setup($(this).val());
+  });
+
+  $('.next-bg').click(function () {
+    var self = $(this);
+    self.attr('disabled', 'disabled');
+    setTimeout(function () {
+      self.removeAttr('disabled');
+    }, 1000);
+    clearInterval(backgroundInterval);
+    theme.changeBackground();
+    backgroundInterval = setInterval(theme.setIntervalBackground, backgroundChangeTime);
+  });
+
+  $('.relax-option[value="relax"]').click(function () {
+    theme.relax();
+  });
+
+  $('.relax-option[value="work"]').click(function () {
+    theme.work();
+  });
 });
