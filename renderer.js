@@ -295,25 +295,20 @@ delete arr['64'];
 var hentaiBackgrounds = arr.map(function(index) {
   let img = 'images/hentai/' + index.toString().padStart(4, '0') + '.jpg';
 
-  let imgElm = document.createElement('img');
-  imgElm.src = img;
-  imgElm.style.width = '1px';
-  imgElm.style.height = '1px';
-  imgElm.style.visibility = 'hidden';
-  document.body.appendChild(imgElm);
+  $('body .img-background').append(`<img class="img-fluid hidden" style="opacity: 0.3" src="${img}" alt="Chúng tôi thay mặt làng Tokai xin lỗi bạn nếu ảnh không hiển thị được background">`)
 
   return img;
 });
 
-const btnShowHideBg = document.getElementById('show-background');
 
 function changeBackground() {
     let items;
-    btnShowHideBg.style.visibility = 'hidden';
     switch (mode) {
         case 'hentai':
+              if ($('#relax-option').text() === 'Work') {
+                return;
+              }
             items = hentaiBackgrounds;
-            btnShowHideBg.style.visibility = 'visible';
             break;
         default:
             items = normalBackgrounds;
@@ -329,24 +324,47 @@ function changeBackground() {
 
 document.querySelector('#modeSelect').addEventListener('change', function() {
     mode = this.value;
+    optionRelax();
     changeBackground();
     display(filteredScreens);
 
 });
 
-btnShowHideBg.addEventListener('click', function () {
-  let body = document.getElementsByTagName('body')[0];
-  let bg = body.style.backgroundImage;
-  bg = bg.replace('url(','').replace(')','').replace(/\"/gi, "");
-  document.getElementById('img-background').src = bg;
-  $('body').addClass('modal-open').append('<div class="modal-backdrop fade show"></div>');
-  $('#modal-background').show().addClass('show');
+function optionRelax() {
+    let mode = $('#modeSelect');
+
+    if (['hentai'].indexOf(mode.val()) !== -1) {
+        $('#relax-option').text('Relax').show();
+    } else {
+      $('#relax-option').text('Work').hide();
+      $('.main-content').show();
+      $('.img-background').hide();
+    }
+}
+
+$('#relax-option').click(function () {
+  var option = $(this);
+  if (option.text() === 'Relax') {
+    option.text('Work');
+    let bg = $('body').css('backgroundImage');
+    bg = bg.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+    $('.img-background img').each(function () {
+      let src = $(this).attr('src');
+      if (bg.indexOf(src) !== -1) {
+        $(this).removeClass('hidden');
+      } else {
+        $(this).addClass('hidden');
+      }
+    });
+    $('.img-background').show();
+    $('.main-content').hide();
+  } else {
+    option.text('Relax');
+    $('.main-content').show();
+    $('.img-background').hide();
+  }
 });
 
-$('#modal-background .close').click(function () {
-  $('body').removeClass('modal-open').find('.modal-backdrop').remove();
-  $('#modal-background').hide().removeClass('show');
-});
 
 changeBackground();
 setInterval(changeBackground, 6000);

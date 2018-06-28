@@ -1,125 +1,127 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>Tokai Dangerous MoeMoe</title>
-      <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <style>
-      body {
-        padding-bottom: 10px;
-        font-size: .9rem;
-        line-height: 1.2;
-      }
-      .btn, .form-control {
-        border-radius: 0 !important;
-      }
-      .gutter-10 {
-          margin-left: -5px;
-          margin-right: -5px;
-      }
+        body {
+            padding-bottom: 10px;
+            font-size: .9rem;
+            line-height: 1.2;
+        }
 
-      .gutter-10>* {
-          padding-left: 5px;
-          padding-right: 5px;
-      }
+        .btn, .form-control {
+            border-radius: 0 !important;
+        }
+
+        .gutter-10 {
+            margin-left: -5px;
+            margin-right: -5px;
+        }
+
+        .gutter-10 > * {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        body {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover
+        }
+        .hidden {
+            display: none;
+        }
     </style>
-  </head>
-  <body style="background-attachment: fixed;background-position: center;background-repeat: no-repeat;background-size: cover">
-      <nav class="bg-dark mb-2 py-2">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-8 d-flex align-items-center">
-              <h3 class="text-white m-0">Tokai Dangerous MoeMoe</h3>
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-danger" style="visibility: hidden" id="show-background">Show background</button>
-            </div>
-            <div class="col-md-2">
-              <select id="modeSelect" class="form-control">
-                <option value="" selected="">Normal mode</option>
-                <option value="hentai">Hentai Nhâm mode</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+</head>
+<body>
+<nav class="bg-dark mb-2 py-2">
     <div class="container-fluid">
-      <div class="row gutter-10 mb-2">
-        <div class="col-md-5">
-            <input type="text" id="btnEd" class="form-control" placeholder="Nhập để tìm kiếm màn hình"/>
+        <div class="row">
+            <div class="col-md-8 d-flex align-items-center">
+                <h3 class="text-white m-0">Tokai Dangerous MoeMoe</h3>
+            </div>
+            <div class="col-md-2 text-right">
+                <button class="btn btn-danger" id="relax-option" style="display: none"></button>
+            </div>
+            <div class="col-md-2">
+                <select id="modeSelect" class="form-control">
+                    <option value="" selected="">Normal mode</option>
+                    <option value="hentai">Tokai mode</option>
+                </select>
+            </div>
         </div>
-        <div class="col-md-2">
-            <select id="actionSelect" class="form-control">
-              <option value="implement">Thực hiện</option>
-              <option value="fixbug">Fixbug</option>
-              <option value="fixbug_in_bug_list">Fixbug in buglist</option>
-              <option value="fixbug_in_customer_requests">Fixbug in customer requests</option>
-              <option value="change_spec">Sửa theo updated spec</option>
-              <option value="test">Test</option>
-              <option value="translate">Dịch</option>
-              <option value="update_spec">Dịch thay đổi spec</option>
-            </select>
-
-            <input type="text" id="bugIdSelect" style="display:none" class="form-control mt-2" placeholder="Nhập bug ID"/>
-        </div>
-        <div class="col-md-1">
-            <select id="percentFromSelect" class="form-control">
-                <option value="0" selected>0%</option>
-                <option value="10">10%</option>
-                <option value="20">20%</option>
-                <option value="30">30%</option>
-                <option value="40">40%</option>
-                <option value="50">50%</option>
-                <option value="60">60%</option>
-                <option value="70">70%</option>
-                <option value="80">80%</option>
-                <option value="90">90%</option>
-              </select>
-        </div>
-        <div class="col-md-1">
-            <select id="percentToSelect" class="form-control">
-                <option value="10">10%</option>
-                <option value="20">20%</option>
-                <option value="30">30%</option>
-                <option value="40">40%</option>
-                <option value="50">50%</option>
-                <option value="60">60%</option>
-                <option value="70">70%</option>
-                <option value="80">80%</option>
-                <option value="90">90%</option>
-                <option value="100" selected>100%</option>
-              </select>
-        </div>
-        <div class="col-md-3">
-            <button class="btn btn-success btn-block" id="copyTimesheetBtn">COPY TIMESHEET REPORT</button>
-        </div>
-      </div>
-
-      <div id="list">
-
-      </div>
     </div>
-      <div class="modal fade bd-example-modal-lg" tabindex="-1" id="modal-background" role="dialog" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title">Sống và làm việc theo lý tưởng làng Tokai</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div class="modal-body">
-                      <img id="img-background" src="" class="img-fluid" alt="" style="opacity: 0.3">
-                  </div>
-              </div>
-          </div>
-      </div>
+</nav>
 
-    <script>
-      window.$ = window.jQuery = require('jquery');
-      // You can also require other files to run in this process
-      require('./renderer.js')
-    </script>
-  </body>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row gutter-10 mb-2">
+            <div class="col-md-5">
+                <input type="text" id="btnEd" class="form-control" placeholder="Nhập để tìm kiếm màn hình"/>
+            </div>
+            <div class="col-md-2">
+                <select id="actionSelect" class="form-control">
+                    <option value="implement">Thực hiện</option>
+                    <option value="fixbug">Fixbug</option>
+                    <option value="fixbug_in_bug_list">Fixbug in buglist</option>
+                    <option value="fixbug_in_customer_requests">Fixbug in customer requests</option>
+                    <option value="change_spec">Sửa theo updated spec</option>
+                    <option value="test">Test</option>
+                    <option value="translate">Dịch</option>
+                    <option value="update_spec">Dịch thay đổi spec</option>
+                </select>
+
+                <input type="text" id="bugIdSelect" style="display:none" class="form-control mt-2"
+                       placeholder="Nhập bug ID"/>
+            </div>
+            <div class="col-md-1">
+                <select id="percentFromSelect" class="form-control">
+                    <option value="0" selected>0%</option>
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <select id="percentToSelect" class="form-control">
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                    <option value="100" selected>100%</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-success btn-block" id="copyTimesheetBtn">COPY TIMESHEET REPORT</button>
+            </div>
+        </div>
+
+        <div id="list">
+
+        </div>
+    </div>
+</div>
+<div class="img-background" style="display: none; background: white">
+
+</div>
+
+<script>
+  window.$ = window.jQuery = require('jquery');
+  // You can also require other files to run in this process
+  require('./renderer.js')
+</script>
+</body>
 </html>
