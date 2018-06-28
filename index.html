@@ -4,46 +4,19 @@
     <meta charset="UTF-8">
     <title>Tokai Dangerous MoeMoe</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            padding-bottom: 10px;
-            font-size: .9rem;
-            line-height: 1.2;
-        }
-
-        .btn, .form-control {
-            border-radius: 0 !important;
-        }
-
-        .gutter-10 {
-            margin-left: -5px;
-            margin-right: -5px;
-        }
-
-        .gutter-10 > * {
-            padding-left: 5px;
-            padding-right: 5px;
-        }
-        body {
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 <nav class="bg-dark mb-2 py-2">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-8 d-flex align-items-center">
+            <div class="col-md-4 d-flex align-items-center">
                 <h3 class="text-white m-0">Tokai Dangerous MoeMoe</h3>
             </div>
-            <div class="col-md-2 text-right">
-                <button class="btn btn-danger" id="relax-option" style="display: none"></button>
+            <div class="col-md-6 text-right">
+                <button class="btn btn-danger relax-option" value="work">Work</button>
+                <button class="btn btn-danger relax-option" value="relax">Relax</button>
+                <button class="btn btn-danger next-bg" value="relax">Change background</button>
             </div>
             <div class="col-md-2">
                 <select id="modeSelect" class="form-control">
@@ -114,7 +87,7 @@
         </div>
     </div>
 </div>
-<div class="img-background" style="display: none; background: white">
+<div class="img-background">
 
 </div>
 

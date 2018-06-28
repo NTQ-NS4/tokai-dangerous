@@ -295,76 +295,77 @@ delete arr['64'];
 var hentaiBackgrounds = arr.map(function(index) {
   let img = 'images/hentai/' + index.toString().padStart(4, '0') + '.jpg';
 
-  $('body .img-background').append(`<img class="img-fluid hidden" style="opacity: 0.3" src="${img}" alt="Chúng tôi thay mặt làng Tokai xin lỗi bạn nếu ảnh không hiển thị được background">`)
+  $('body').append(`<img src="${img}" style="width: 1px; height: 1px; visibility: hidden">`);
 
   return img;
 });
 
+let backgroundUrl = '';
 
-function changeBackground() {
-    let items;
-    switch (mode) {
-        case 'hentai':
-              if ($('#relax-option').text() === 'Work') {
-                return;
-              }
-            items = hentaiBackgrounds;
-            break;
-        default:
-            items = normalBackgrounds;
-    }
+function changeBackground(change) {
+  let isRelax = $('.relax-option[value="work"]:visible').length;
+  if (isRelax && change !== true) {
+    return;
+  }
+  let items;
+  mode = $('#modeSelect').val();
+  switch (mode) {
+    case 'hentai':
+      items = hentaiBackgrounds;
+      break;
+    default:
+      items = normalBackgrounds;
+  }
 
-  let image = items[Math.floor(Math.random()*items.length - 1)];
+  let image = items[Math.floor(Math.random() * items.length)];
+  while (typeof image === 'undefined') {
+    image = items[Math.floor(Math.random() * items.length)];
+  }
   if (!image || image.startsWith('#')) {
-        document.getElementsByTagName('body')[0].style.backgroundImage = ``;
-    } else {
-        document.getElementsByTagName('body')[0].style.backgroundImage = `url(${image})`;
-    }
-}
-
-document.querySelector('#modeSelect').addEventListener('change', function() {
-    mode = this.value;
-    optionRelax();
-    changeBackground();
-    display(filteredScreens);
-
-});
-
-function optionRelax() {
-    let mode = $('#modeSelect');
-
-    if (['hentai'].indexOf(mode.val()) !== -1) {
-        $('#relax-option').text('Relax').show();
-    } else {
-      $('#relax-option').text('Work').hide();
-      $('.main-content').show();
-      $('.img-background').hide();
-    }
-}
-
-$('#relax-option').click(function () {
-  var option = $(this);
-  if (option.text() === 'Relax') {
-    option.text('Work');
-    let bg = $('body').css('backgroundImage');
-    bg = bg.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-    $('.img-background img').each(function () {
-      let src = $(this).attr('src');
-      if (bg.indexOf(src) !== -1) {
-        $(this).removeClass('hidden');
-      } else {
-        $(this).addClass('hidden');
-      }
-    });
-    $('.img-background').show();
-    $('.main-content').hide();
+    backgroundUrl = '';
   } else {
-    option.text('Relax');
-    $('.main-content').show();
-    $('.img-background').hide();
+    backgroundUrl = image;
+  }
+  let urlBg = backgroundUrl === '' ? '' : `url(${backgroundUrl})`;
+  document.getElementsByTagName('body')[0].style.backgroundImage = urlBg;
+}
+
+$('#modeSelect').change(function() {
+    let mode = $(this).val();
+    $('body').attr('data-mode', mode);
+    changeBackground(true);
+    display(filteredScreens);
+  $('.relax-option[value="work"]').hide();
+  if (mode) {
+    $('.relax-option[value="relax"]').show();
+  } else {
+    $('.relax-option[value="relax"]').hide();
   }
 });
 
+function work() {
+  $('.relax-option[value="work"]').hide();
+  $('.relax-option[value="relax"]').show();
+  $('body').removeClass('relax');
+}
+
+function relax() {
+  $('.relax-option[value="work"]').show();
+  $('.relax-option[value="relax"]').hide();
+  $('body').addClass('relax');
+  $('.img-background').html(`<img class="img-fluid" src="${backgroundUrl}">`)
+}
+
+$('.relax-option[value="work"]').click(work);
+
+$('.relax-option[value="relax"]').click(relax);
+
+$('.next-bg').click(function () {
+  changeBackground(true);
+  if ($('.relax-option[value="work"]:visible').length) {
+      relax();
+  }
+});
 
 changeBackground();
 setInterval(changeBackground, 6000);
