@@ -268,17 +268,32 @@ const theme = function () {
         nextBg = Math.floor(Math.random() * options[themeCurrent].length);
       }
 
-      let show = { width: '100%', height: '100%', opacity: 1 };
-      let hide = { width: '0%', height: '0%', opacity: 0 };
-      let time = 500;
+      let time = 1000;
 
-      $(`.bg-theme.${themeCurrent}_${prevBg}`).css({ zIndex: 5 }).animate(hide, time, function () {
-        $(this).hide();
+      let animate = [
+        {
+          hide: { width: '0%', height: '0%', opacity: 0 },
+          show: { width: '100%', height: '100%', opacity: 1 }
+        },
+        {
+          hide: { top: '100%', left: '100%', opacity: 0 },
+          show: { top: '0%', left: '0%', opacity: 1 }
+        },
+      ];
+
+      let randomType = animate[Math.floor(Math.random() * animate.length)];
+
+      $(`.bg-theme.${themeCurrent}_${prevBg}`).css({ zIndex: 5 }).animate(randomType.hide, time, function () {
+        $(this).attr('style', 'display: none;');
       });
-      $(`.bg-theme.${themeCurrent}_${nextBg}`).css({ zIndex: 4, opacity: 0 }).show().animate(show, time, function () {
+      $(`.bg-theme.${themeCurrent}_${nextBg}`).css({ zIndex: 4, opacity: 0 }).show().animate(randomType.show, time, function () {
 
       });
-      $('img.relax').attr('src', options[themeCurrent][nextBg]);
+      let image = $('img.relax');
+      image.fadeOut('fast', function () {
+        image.attr('src', options[themeCurrent][nextBg]);
+        image.fadeIn('fast');
+      });
     }
   }
   function work() {
@@ -308,7 +323,7 @@ const theme = function () {
       $body.find('#app .main-content').slideUp();
       $('.relax-option[value="work"]').show();
       $('.relax-option[value="relax"]').hide();
-      $body.append(`<img class="img-fluid relax" style="opacity: 0.1" src="${options[themeCurrent][nextBg]}">`)
+      $body.append(`<img class="img-fluid relax" src="${options[themeCurrent][nextBg]}">`)
     },
     setup: function (name) {
       setupThem(name);
@@ -338,7 +353,7 @@ $(document).ready(function () {
     self.attr('disabled', 'disabled');
     setTimeout(function () {
       self.removeAttr('disabled');
-    }, 1000);
+    }, 500);
     clearInterval(backgroundInterval);
     theme.changeBackground();
     backgroundInterval = setInterval(theme.setIntervalBackground, backgroundChangeTime);

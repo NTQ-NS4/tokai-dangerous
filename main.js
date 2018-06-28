@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, Menu} = require('electron')
+const {app, BrowserWindow, Menu, Tray} = require('electron')
 const path = require('path')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -11,16 +11,13 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1020,
     height: 660,
-    icon: path.join(__dirname, 'images/icon2.jpg')
-  })
+    icon: path.join(__dirname, 'images/icons/png/64x64.png')
+  });
 
   // mainWindow.webContents.openDevTools()
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -53,7 +50,7 @@ function createWindow () {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
-// This method will be called when Electron has finished
+// This method will be called when Electron has finishedtokai-dangerous-moemoe
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
