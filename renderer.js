@@ -168,7 +168,7 @@ function display(data) {
 
         var border = tinycolor(color).darken().toString();
 
-        html += '<p class="screenDiv" style="background:'+color+';border: 1px solid '+border+';heigth:32px;line-height:32px;padding-bottom: 2px;" data-copy="' + encodeURIComponent(JSON.stringify(value)) +'">' +
+        html += '<p class="screenDiv" style="background:'+color+';border: 1px solid '+border+';heigth:32px; padding-left:7px;line-height:32px;padding-bottom: 2px;" data-copy="' + encodeURIComponent(JSON.stringify(value)) +'">' +
         'JSTSAS' + value.full +
         '<span style="float:right"><button class="copyJapaneseBtn btn btn-default btn-sm">COPY JAPANESE</button>' +
         ' <button class="copyBtn btn btn-default btn-sm">COPY FULL</button></span></p>';
@@ -309,18 +309,18 @@ const btnShowHideBg = document.getElementById('show-background');
 
 function changeBackground() {
     let items;
+    btnShowHideBg.style.visibility = 'hidden';
     switch (mode) {
         case 'hentai':
             items = hentaiBackgrounds;
             btnShowHideBg.style.visibility = 'visible';
             break;
         default:
-            btnShowHideBg.style.visibility = 'none';
             items = normalBackgrounds;
     }
 
-    let image = items[Math.floor(Math.random()*items.length)];
-    if (image.startsWith('#')) {
+  let image = items[Math.floor(Math.random()*items.length - 1)];
+  if (!image || image.startsWith('#')) {
         document.getElementsByTagName('body')[0].style.backgroundImage = ``;
     } else {
         document.getElementsByTagName('body')[0].style.backgroundImage = `url(${image})`;
@@ -332,15 +332,20 @@ document.querySelector('#modeSelect').addEventListener('change', function() {
     changeBackground();
     display(filteredScreens);
 
-})
+});
 
-// FIXME: Implement late
 btnShowHideBg.addEventListener('click', function () {
-  let body = document.getElementsByTagName('body'[0]);
+  let body = document.getElementsByTagName('body')[0];
   let bg = body.style.backgroundImage;
   bg = bg.replace('url(','').replace(')','').replace(/\"/gi, "");
   document.getElementById('img-background').src = bg;
+  $('body').addClass('modal-open').append('<div class="modal-backdrop fade show"></div>');
+  $('#modal-background').show().addClass('show');
+});
 
+$('#modal-background .close').click(function () {
+  $('body').removeClass('modal-open').find('.modal-backdrop').remove();
+  $('#modal-background').hide().removeClass('show');
 });
 
 changeBackground();

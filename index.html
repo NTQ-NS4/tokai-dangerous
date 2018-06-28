@@ -103,12 +103,21 @@
       <div class="modal fade bd-example-modal-lg" tabindex="-1" id="modal-background" role="dialog" aria-hidden="true">
           <div class="modal-dialog modal-lg">
               <div class="modal-content">
-                  <img id="img-background" src="" class="img-fluid" alt="">
+                  <div class="modal-header">
+                      <h5 class="modal-title">Sống và làm việc theo lý tưởng làng Tokai</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+                      <img id="img-background" src="" class="img-fluid" alt="" style="opacity: 0.3">
+                  </div>
               </div>
           </div>
       </div>
 
     <script>
+      window.$ = window.jQuery = require('jquery');
       // You can also require other files to run in this process
       require('./renderer.js')
     </script>
