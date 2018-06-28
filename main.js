@@ -50,7 +50,7 @@ function createWindow () {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
-// This method will be called when Electron has finishedtokai-dangerous-moemoe
+// This method will be called when Electron has finish
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
