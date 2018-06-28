@@ -58,3 +58,21 @@ body[data-mode="hentai"] .relax-option,
 body[data-mode="hentai"] .next-bg {
     display: inline-block;
 }
+
+#clearKeywordInput {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    font-size: 30px;
+    opacity: .1;
+    padding: 3px 8px;
+    cursor: pointer;
+}
+
+#clearKeywordInput:focus, #clearKeywordInput:active {
+    outline: none;
+}
+
+#keywordInputContainer:hover #clearKeywordInput {
+    opacity: .4;
+}

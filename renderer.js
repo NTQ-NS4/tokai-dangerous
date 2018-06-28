@@ -104,7 +104,7 @@ function copyTimesheet() {
     if (filteredScreens.length === 1) {
         var screen = 'JSTSAS' + filteredScreens[0].japanese;
     } else {
-        var screen = document.querySelector('#btnEd').value;
+        var screen = document.querySelector('#keywordInput').value;
     }
 
     var action = document.querySelector('#actionSelect option:checked').value;
@@ -155,9 +155,17 @@ function onChangeAction() {
     }
 }
 
-document.querySelector('#btnEd').addEventListener('keyup', function() { filterThenDisplayScreenList(this.value) })
+document.querySelector('#keywordInput').addEventListener('keyup', function() { filterThenDisplayScreenList(this.value) })
 document.querySelector('#copyTimesheetBtn').addEventListener('click', copyTimesheet)
 document.querySelector('#actionSelect').addEventListener('change', onChangeAction)
+document.querySelector('#clearKeywordInput').addEventListener('click', () => {
+    if (!$('#keywordInput').val()) {
+        return;
+    }
+
+    $('#keywordInput').val('');
+    filterThenDisplayScreenList('');
+})
 document.addEventListener('click', function (e) {
     if (e.target.classList.contains('copyBtn')) {
         var data = JSON.parse(decodeURIComponent(e.target.parentNode.parentNode.dataset.copy));
@@ -175,8 +183,8 @@ document.addEventListener('click', function (e) {
 
     if (e.target.classList.contains('screenDiv')) {
         var data = JSON.parse(decodeURIComponent(e.target.dataset.copy));
-        document.querySelector('#btnEd').value = data.id;
-        filterThenDisplayScreenList(document.querySelector('#btnEd').value);
+        document.querySelector('#keywordInput').value = data.id;
+        filterThenDisplayScreenList(document.querySelector('#keywordInput').value);
     }
 });
 
