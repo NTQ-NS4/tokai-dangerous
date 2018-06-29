@@ -14,7 +14,7 @@ function createWindow () {
     icon: path.join(__dirname, 'images/icons/png/64x64.png')
   });
 
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')

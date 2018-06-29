@@ -246,6 +246,7 @@ const theme = function () {
       });
     });
 
+    console.log(options);
     $body.find('.backgrounds').append(html);
   }
   function setupThem(name) {
@@ -302,7 +303,8 @@ const theme = function () {
       let randomType = animate[Math.floor(Math.random() * animate.length)];
 
       $(`.bg-theme.${prevBg}`).css({ zIndex: 5 }).animate(randomType.hide, time, function () {
-        $(this).attr('style', 'display: none;');
+        var bg = $(this).css('backgroundImage');
+        $(this).attr('style', 'display: none; background-image: ' + bg);
       });
       $(`.bg-theme.${nextBg}`).css({ zIndex: 4, opacity: 0 }).show().animate(randomType.show, time, function () {
 
@@ -353,10 +355,11 @@ const theme = function () {
           options[item.key].name = item.name;
           options[item.key].key = item.key;
           let data = {};
+          console.log(item);
           _.forEach(item.data, function (url, index) {
             data[item.key + '_' + index + '_' + md5(item.key + index + url)] = url;
           });
-
+          console.log(data);
           options[item.key].data = Object.assign(options[item.key].data, data);
         }
 
