@@ -1,6 +1,6 @@
 {
   "name": "tokai-dangerous-moemoe",
-  "version": "9.1.0",
+  "version": "10.1.0",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
@@ -32,6 +32,8 @@
   "dependencies": {
     "bootstrap": "^4.1.1",
     "jquery": "^3.3.1",
+    "lodash": "^4.17.10",
+    "md5": "^2.2.1",
     "popper.js": "^1.14.3",
     "tinycolor2": "^1.4.1"
   }

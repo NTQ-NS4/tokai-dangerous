@@ -4,7 +4,9 @@
 
 const { clipboard } = require('electron')
 const {net} = require('electron').remote
-var tinycolor = require("tinycolor2")
+var tinycolor = require("tinycolor2");
+const md5 = require('md5');
+const _ = require('lodash');
 
 var screens;
 var filteredScreens;
@@ -218,33 +220,47 @@ var normalBackgrounds = [
 
 const theme = function () {
   let $body = $('body');
-  let themeCurrent = '';
-  let hentai = [...Array(64).keys()].map(function (index) {
-    return 'images/hentai/' + index + '.jpg'
+  let themeCurrent = {};
+  let hentaiData = {};
+  [...Array(64).keys()].forEach(function (index) {
+    hentaiData['hetai_' + index] = 'images/hentai/' + index + '.jpg';
   });
 
-  const options = { hentai: hentai };
+  const options = { hentai: { key: 'hentai', name: 'Hentai', data: hentaiData } };
   let prevBg;
   let nextBg;
   let isRelax = false;
+  let isChangeTheme = false;
 
   function loadAll() {
     let html = '';
-    for (let name in options) {
-      for (let i = 0; i < options[name].length; i++) {
-        html += `<li class="bg-theme ${name}_${i}" style="display: none; background-image: url('${options[name][i]}')"></li>`;
+    _.forEach(options, function (theme) {
+      if (!$(`#modeSelect option[value="${theme.key}"]`).length) {
+        $(`#modeSelect`).append(`<option value="${theme.key}">${theme.name}</option>`);
       }
-    }
-    $body.find('.backgrounds').append(html)
+
+      _.forEach(theme.data, function (image, key) {
+        if (!$(`.bg-theme.${key}`).length) {
+          html += `<li class="bg-theme ${key}" style="display: none; background-image: url('${image}')"></li>`;
+        }
+      });
+    });
+
+    $body.find('.backgrounds').append(html);
   }
   function setupThem(name) {
     if (typeof name === 'undefined' || name === '') {
       name = 'normal';
+      themeCurrent = {
+        key: 'normal',
+        name: 'Normal',
+        data: {}
+      };
+    } else{
+      themeCurrent = options[name];
     }
     prevBg = 'prev';
     nextBg = 'next';
-    themeCurrent = name;
-    $body.attr('data-theme', name);
     $body.removeClass('relax');
     $body.find('.backgrounds li').css({ display: 'none' });
     $body.find('.relax-option').hide();
@@ -260,12 +276,14 @@ const theme = function () {
   }
 
   function changeBackground() {
-    if (Array.isArray(options[themeCurrent]) && options[themeCurrent].length > 1) {
+    if (!_.isEmpty(themeCurrent['data']) && _.isObject(themeCurrent['data'])) {
       prevBg = nextBg;
 
-      nextBg = Math.floor(Math.random() * options[themeCurrent].length);
-      while (nextBg === prevBg) {
-        nextBg = Math.floor(Math.random() * options[themeCurrent].length);
+      nextBg = randomPropertyKey(themeCurrent['data']);
+      let count = 0;
+      while (nextBg === prevBg && count < 15) {
+        nextBg = randomPropertyKey(themeCurrent['data']);
+        count++;
       }
 
       let time = 1000;
@@ -283,15 +301,15 @@ const theme = function () {
 
       let randomType = animate[Math.floor(Math.random() * animate.length)];
 
-      $(`.bg-theme.${themeCurrent}_${prevBg}`).css({ zIndex: 5 }).animate(randomType.hide, time, function () {
+      $(`.bg-theme.${prevBg}`).css({ zIndex: 5 }).animate(randomType.hide, time, function () {
         $(this).attr('style', 'display: none;');
       });
-      $(`.bg-theme.${themeCurrent}_${nextBg}`).css({ zIndex: 4, opacity: 0 }).show().animate(randomType.show, time, function () {
+      $(`.bg-theme.${nextBg}`).css({ zIndex: 4, opacity: 0 }).show().animate(randomType.show, time, function () {
 
       });
       let image = $('img.relax');
       image.fadeOut('fast', function () {
-        image.attr('src', options[themeCurrent][nextBg]);
+        image.attr('src', themeCurrent['data'][nextBg]);
         image.fadeIn('fast');
       });
     }
@@ -305,6 +323,56 @@ const theme = function () {
     $('.relax-option[value="relax"]').show();
     $('.relax-option[value="work"]').hide();
   }
+
+  function getOptions() {
+    return new Promise((resolve, reject) => {
+      var request = net.request({
+        host: "api.jsonbin.io",
+        port: 443,
+        protocol: 'https:',
+        path: "b/5b357dbd1f72822c105eded3/latest",
+        method: 'GET',
+      }, response => {
+        response.on('data', chunk => {
+          var data = JSON.parse(chunk.toString('utf8'));
+          resolve(data);
+        });
+      }).on("error", (e) => {
+        reject(e);
+      });
+
+      request.end();
+    });
+  }
+
+  function loadOptions() {
+    getOptions().then(function (response) {
+      response.forEach(function (item) {
+        if (_.isObject(item) && _.isArray(item.data)) {
+          options[item.key] = _.isObject(options[item.key]) ? options[item.key] : { data: {} };
+          options[item.key].name = item.name;
+          options[item.key].key = item.key;
+          let data = {};
+          _.forEach(item.data, function (url, index) {
+            data[item.key + '_' + index + '_' + md5(item.key + index + url)] = url;
+          });
+
+          options[item.key].data = Object.assign(options[item.key].data, data);
+        }
+
+      });
+
+      loadAll();
+
+      if (!isChangeTheme && typeof options['random'] !== 'undefined') {
+        setupThem('random');
+        $('#modeSelect').val('random');
+      }
+    })
+  }
+
+  loadOptions();
+  setInterval(loadOptions, 5*60*1000);
 
   loadAll();
 
@@ -323,9 +391,10 @@ const theme = function () {
       $body.find('#app .main-content').slideUp();
       $('.relax-option[value="work"]').show();
       $('.relax-option[value="relax"]').hide();
-      $body.append(`<img class="img-fluid relax" src="${options[themeCurrent][nextBg]}">`)
+      $body.append(`<img class="img-fluid relax" src="${themeCurrent['data'][nextBg]}">`)
     },
     setup: function (name) {
+      isChangeTheme = true;
       setupThem(name);
       changeBackground();
     },
@@ -342,10 +411,15 @@ theme.init();
 
 $(document).ready(function () {
 
-  $('#modeSelect').change(function () {
+  $('#modeSelect').change(function (e) {
+    let val = $(this).val();
+    if (val === 'hentai') {
+      e.preventDefault();
+    }
+
     clearInterval(backgroundInterval);
     backgroundInterval = setInterval(theme.setIntervalBackground, backgroundChangeTime);
-    theme.setup($(this).val());
+    theme.setup(val);
   });
 
   $('.next-bg').click(function () {
@@ -367,3 +441,9 @@ $(document).ready(function () {
     theme.work();
   });
 });
+
+function randomPropertyKey(obj) {
+  let keys = Object.keys(obj);
+
+  return keys[ keys.length * Math.random() << 0];
+}
