@@ -89,3 +89,10 @@ body .backgrounds li {
 #keywordInputContainer:hover #clearKeywordInput {
     opacity: .4;
 }
+
+img.relax {
+    cursor: zoom-in;
+}
+img.relax.zoom {
+    cursor: zoom-out;
+}

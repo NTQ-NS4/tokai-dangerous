@@ -237,6 +237,8 @@ const theme = function () {
     _.forEach(options, function (theme) {
       if (!$(`#modeSelect option[value="${theme.key}"]`).length) {
         $(`#modeSelect`).append(`<option value="${theme.key}">${theme.name}</option>`);
+      } else {
+        $(`#modeSelect option[value="${theme.key}"]`).text(theme.name);
       }
 
       _.forEach(theme.data, function (image, key) {
@@ -318,7 +320,6 @@ const theme = function () {
   }
   function work() {
     isRelax = false;
-    $body.find('.backgrounds li').css({ display: 'none' });
     $body.find('.backgrounds').show();
     $body.find('#app .main-content').slideDown();
     $body.find('img.relax').remove();
@@ -373,6 +374,25 @@ const theme = function () {
       }
     })
   }
+
+  $('body').on('click', 'img.relax', function () {
+    $(this).css({ opacity: 0 });
+    $('body').addClass('modal-open');
+    let src = $(this).attr('src');
+    $('<div>').css({
+      background: 'RGBA(0, 0, 0, .7) url('+src+') no-repeat center',
+      backgroundSize: 'contain',
+      width:'100%', height:'100%',
+      position:'fixed',
+      zIndex:'10000',
+      top:'0', left:'0',
+      cursor: 'zoom-out'
+    }).click(function(){
+      $(this).remove();
+      $('img.relax').css({ opacity: 1 });
+      $('body').removeClass('modal-open');
+    }).appendTo('body');
+  });
 
   loadOptions();
   setInterval(loadOptions, 5*60*1000);
