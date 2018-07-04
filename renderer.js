@@ -7,15 +7,15 @@ const {net} = require('electron').remote
 var tinycolor = require("tinycolor2");
 const md5 = require('md5');
 const _ = require('lodash');
+const config = require('./config');
 
 var screens;
 var filteredScreens;
 var trans;
 var backgroundInterval;
-var backgroundChangeTime = 10000;
 
 sendRequest = options => {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
         var request = net.request(options, response => {
             response.on('data', chunk => {
                 var data = JSON.parse(chunk.toString('utf8'));
@@ -31,10 +31,10 @@ sendRequest = options => {
 
 getSettingRequestOptions = () => {
     return {
-        host: "api.jsonbin.io",
-        port: 443,
-        protocol: 'https:',
-        path: "b/5b343721efaed72daeecc60f/latest",
+        host: config.api.host,
+        port: config.api.port,
+        protocol: config.api.protocol,
+        path: config.api.path.setting,
         method: 'GET',
     }
 }
@@ -50,7 +50,7 @@ initiateData = (data) => {
 
 initiateMainScreen = () => {
     theme.changeBackground();
-    backgroundInterval = setInterval(theme.setIntervalBackground, backgroundChangeTime);
+    backgroundInterval = setInterval(theme.setIntervalBackground, config.backgroundChangeTime);
 
     displayScreens(filteredScreens);
 }
@@ -90,7 +90,7 @@ function displayScreens(data) {
     data.forEach(function(value) {
         var color = '#fefefe';
         if (!mode) {
-            var color = normalBackgrounds[Math.floor(Math.random()*normalBackgrounds.length)];
+          color = config.normalBackgrounds[Math.floor(Math.random() * config.normalBackgrounds.length)];
         }
 
         var border = tinycolor(color).darken().toString();
@@ -194,30 +194,6 @@ document.addEventListener('click', function (e) {
 
 var mode = "";
 
-var normalBackgrounds = [
-    '#FFCDD2',
-    '#F8BBD0',
-    '#E1BEE7',
-    '#C5CAE9',
-    '#BBDEFB',
-    '#B2EBF2',
-    '#B2DFDB',
-    '#A5D6A7',
-    '#C5E1A5',
-    '#FFF9C4',
-    '#FFECB3',
-    '#FFE0B2',
-    '#FFCCBC',
-    '#D7CCC8',
-    '#E0E0E0',
-    '#CFD8DC',
-    '#CFD8DC',
-    '#81C784',
-    '#69F0AE',
-    '#FFD180',
-    '#FFAB40'
-];
-
 const theme = function () {
   let $body = $('body');
   let themeCurrent = {};
@@ -248,7 +224,6 @@ const theme = function () {
       });
     });
 
-    console.log(options);
     $body.find('.backgrounds').append(html);
   }
   function setupThem(name) {
@@ -330,10 +305,10 @@ const theme = function () {
   function getOptions() {
     return new Promise((resolve, reject) => {
       var request = net.request({
-        host: "api.jsonbin.io",
-        port: 443,
-        protocol: 'https:',
-        path: "b/5b357dbd1f72822c105eded3/latest",
+        host: config.api.host,
+        port: config.api.port,
+        protocol: config.api.protocol,
+        path: config.api.path.theme,
         method: 'GET',
       }, response => {
         response.on('data', chunk => {
@@ -356,11 +331,11 @@ const theme = function () {
           options[item.key].name = item.name;
           options[item.key].key = item.key;
           let data = {};
-          console.log(item);
+
           _.forEach(item.data, function (url, index) {
             data[item.key + '_' + index + '_' + md5(item.key + index + url)] = url;
           });
-          console.log(data);
+
           options[item.key].data = Object.assign(options[item.key].data, data);
         }
 
@@ -395,7 +370,7 @@ const theme = function () {
   });
 
   loadOptions();
-  setInterval(loadOptions, 5*60*1000);
+  setInterval(loadOptions, config.getThemeOptionTime);
 
   loadAll();
 
@@ -441,7 +416,7 @@ $(document).ready(function () {
     }
 
     clearInterval(backgroundInterval);
-    backgroundInterval = setInterval(theme.setIntervalBackground, backgroundChangeTime);
+    backgroundInterval = setInterval(theme.setIntervalBackground, config.backgroundChangeTime);
     theme.setup(val);
   });
 
@@ -453,7 +428,7 @@ $(document).ready(function () {
     }, 500);
     clearInterval(backgroundInterval);
     theme.changeBackground();
-    backgroundInterval = setInterval(theme.setIntervalBackground, backgroundChangeTime);
+    backgroundInterval = setInterval(theme.setIntervalBackground, config.backgroundChangeTime);
   });
 
   $('.relax-option[value="relax"]').click(function () {
