@@ -1,6 +1,6 @@
 {
-  "name": "tokai-dangerous-moemoe",
-  "version": "10.2.2",
+  "name": "tokai-dangerous-moemoe-10.3",
+  "version": "10.3",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {

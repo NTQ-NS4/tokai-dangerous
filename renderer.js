@@ -16,13 +16,11 @@ var backgroundInterval;
 
 sendRequest = options => {
   return new Promise((resolve, reject) => {
-        var request = net.request(options, response => {
-            response.on('data', chunk => {
-                var data = JSON.parse(chunk.toString('utf8'));
-                resolve(data);
-            });
-        }).on("error", (e) => {
+        var request = net.request(options).on("error", (e) => {
             reject(e);
+        }).on('response', response => {
+          var data = JSON.parse(response.data.reduce((data, current) => data.toString('utf8') + (current === null ? '' : current.toString('utf8'))));
+          resolve(data);
         });
 
         request.end();
